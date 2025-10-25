@@ -30,6 +30,14 @@ sudo apt-get update > /dev/null 2>&1
 echo "🔧 [75%] Installing Grafana..."
 sudo apt-get install grafana -y > /dev/null 2>&1
 
+echo "🔧 [85%] Mengatur root_url di grafana.ini agar cocok dengan subpath '/grafana'..."
+CONFIG_FILE="/etc/grafana/grafana.ini"
+if [ -f "$CONFIG_FILE" ]; then
+  sudo sed -i '/^;*root_url *=/c\root_url = http://localhost/grafana' "$CONFIG_FILE"
+else
+  echo "❌ File konfigurasi $CONFIG_FILE tidak ditemukan. Lewati pengaturan subpath."
+fi
+
 echo "🔧 [90%] Enabling and starting Grafana service..."
 sudo systemctl enable grafana-server > /dev/null 2>&1
 sudo systemctl start grafana-server > /dev/null 2>&1
