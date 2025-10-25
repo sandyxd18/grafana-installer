@@ -30,12 +30,29 @@ sudo apt-get update > /dev/null 2>&1
 echo "🔧 [75%] Installing Grafana..."
 sudo apt-get install grafana -y > /dev/null 2>&1
 
-echo "🔧 [85%] Mengatur root_url di grafana.ini agar cocok dengan subpath '/grafana'..."
+echo "🔧 [85%] Konfigurasi grafana.ini untuk reverse proxy..."
+
 CONFIG_FILE="/etc/grafana/grafana.ini"
-if [ -f "$CONFIG_FILE" ]; then
-  sudo sed -i '/^;*root_url *=/c\root_url = http://localhost/grafana' "$CONFIG_FILE"
+if [ ! -f "$CONFIG_FILE" ]; then
+  echo "❌ File $CONFIG_FILE tidak ditemukan. Pastikan Grafana sudah terinstal."
+  exit 1
+fi
+
+read -rp "🌐 Masukkan domain publik Grafana (contoh: https://grafana-ikbal.netschool2025.com/grafana): " DOMAIN_URL
+
+if [[ -z "$DOMAIN_URL" ]]; then
+  echo "❌ Domain tidak boleh kosong."
+  exit 1
+fi
+
+echo "🔧 Mengatur root_url di grafana.ini..."
+sudo sed -i "/^;*root_url *=/c\root_url = $DOMAIN_URL" "$CONFIG_FILE"
+
+echo "🔧 Mengaktifkan serve_from_sub_path..."
+if grep -q "^;*serve_from_sub_path *=.*" "$CONFIG_FILE"; then
+  sudo sed -i "/^;*serve_from_sub_path *=/c\serve_from_sub_path = true" "$CONFIG_FILE"
 else
-  echo "❌ File konfigurasi $CONFIG_FILE tidak ditemukan. Lewati pengaturan subpath."
+  echo "serve_from_sub_path = true" | sudo tee -a "$CONFIG_FILE" > /dev/null
 fi
 
 echo "🔧 [90%] Enabling and starting Grafana service..."
