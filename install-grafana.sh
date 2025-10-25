@@ -49,7 +49,7 @@ echo "🔧 Mengatur root_url di grafana.ini..."
 sudo sed -i "/^;*root_url *=/c\root_url = $DOMAIN_URL" "$CONFIG_FILE"
 
 echo "🔧 Mengaktifkan serve_from_sub_path..."
-if grep -q "^;*serve_from_sub_path *=.*" "$CONFIG_FILE"; then
+if sudo grep -q "^;*serve_from_sub_path *=.*" "$CONFIG_FILE"; then
   sudo sed -i "/^;*serve_from_sub_path *=/c\serve_from_sub_path = true" "$CONFIG_FILE"
 else
   echo "serve_from_sub_path = true" | sudo tee -a "$CONFIG_FILE" > /dev/null
