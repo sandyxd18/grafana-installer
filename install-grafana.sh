@@ -38,7 +38,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
   exit 1
 fi
 
-read -rp "🌐 Masukkan domain publik Grafana (contoh: https://grafana-ikbal.netschool2025.com/grafana): " DOMAIN_URL
+read -rp "🌐 Masukkan domain publik Grafana (contoh: https://grafana-<nama panggilan>.netschool2025.com/grafana): " DOMAIN_URL
 
 if [[ -z "$DOMAIN_URL" ]]; then
   echo "❌ Domain tidak boleh kosong."
